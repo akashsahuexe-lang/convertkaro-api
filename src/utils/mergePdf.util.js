@@ -1,0 +1,23 @@
+const fs = require("fs");
+const { PDFDocument } = require("pdf-lib");
+
+async function mergePdfs(files, outputPath) {
+  const mergedPdf = await PDFDocument.create();
+
+  for (const file of files) {
+    const pdfBytes = fs.readFileSync(file.path);
+    const pdf = await PDFDocument.load(pdfBytes);
+
+    const pages = await mergedPdf.copyPages(
+      pdf,
+      pdf.getPageIndices()
+    );
+
+    pages.forEach(page => mergedPdf.addPage(page));
+  }
+
+  const mergedPdfBytes = await mergedPdf.save();
+  fs.writeFileSync(outputPath, mergedPdfBytes);
+}
+
+module.exports = { mergePdfs };
