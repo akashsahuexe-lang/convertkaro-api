@@ -5,8 +5,7 @@ const { pdfToImage } = require("../controllers/pdfToImage.controller");
 const router = express.Router();
 
 const upload = multer({
-  dest: "src/temp/",
-});
+  dest: "/tmp/",});
 
 router.post("/", upload.single("pdf"), pdfToImage);
 
