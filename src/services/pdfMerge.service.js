@@ -12,7 +12,7 @@ exports.mergePdfService = async (files) => {
     pages.forEach(page => mergedPdf.addPage(page));
   }
 
-  const outputPath = path.join("src/temp", `merged-${Date.now()}.pdf`);
+  const outputPath = path.join("/tmp", `merged-${Date.now()}.pdf`);
   const mergedPdfBytes = await mergedPdf.save();
 
   fs.writeFileSync(outputPath, mergedPdfBytes);
