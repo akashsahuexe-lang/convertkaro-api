@@ -1,20 +1,31 @@
 const express = require("express");
 const cors = require("cors");
 
-const mergePdfRoute = require("./routes/mergePdf.route");
+// Routes
+const pdfMergeRoutes = require("./routes/pdfMerge.routes");
+const pdfSplitRoutes = require("./routes/pdfSplit.routes");
+const pdfCompressRoutes = require("./routes/pdfCompress.routes");
+const pdfToImageRoutes = require("./routes/pdfToImage.routes");
 
 const app = express();
 
-// ✅ CORS – THIS WAS MISSING
-app.use(cors());
+// ✅ CORS MUST COME AFTER app initialization
+app.use(cors({
+  origin: "*",
+  exposedHeaders: ["Content-Disposition"]
+}));
 
-// optional but safe
 app.use(express.json());
 
-app.use("/api/merge-pdf", mergePdfRoute);
-
+// Health check
 app.get("/", (req, res) => {
-  res.send("ConvertKaro backend is running 🚀");
+  res.send("ConvertKaro Backend is running");
 });
+
+// Routes
+app.use("/api/pdf/merge", pdfMergeRoutes);
+app.use("/api/pdf/split", pdfSplitRoutes);
+app.use("/api/pdf/compress", pdfCompressRoutes);
+app.use("/api/pdf/to-image", pdfToImageRoutes);
 
 module.exports = app;
