@@ -12,17 +12,14 @@ exports.mergePdfService = async (files) => {
     pages.forEach(page => mergedPdf.addPage(page));
   }
 
-  const outputPath = path.join("/tmp", `merged-${Date.now()}.pdf`);
-  const mergedPdfBytes = await mergedPdf.save();
+ const mergedPdfBytes = await mergedPdf.save();
 
-  fs.writeFileSync(outputPath, mergedPdfBytes);
+// cleanup input PDFs
+files.forEach(file => {
+  if (fs.existsSync(file.path)) {
+    fs.unlinkSync(file.path);
+  }
+});
 
-  // 🔥 cleanup input PDFs
-  files.forEach(file => {
-    if (fs.existsSync(file.path)) {
-      fs.unlinkSync(file.path);
-    }
-  });
+return mergedPdfBytes;
 
-  return outputPath;
-};
