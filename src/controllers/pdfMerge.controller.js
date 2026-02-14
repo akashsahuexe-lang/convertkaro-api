@@ -7,13 +7,12 @@ exports.mergePdf = async (req, res) => {
       return res.status(400).json({ error: "Minimum 2 PDFs required" });
     }
 
-    const mergedFilePath = await mergePdfService(req.files);
+   const mergedPdfBytes = await mergePdfService(req.files);
 
-    res.download(mergedFilePath, () => {
-      if (fs.existsSync(mergedFilePath)) {
-        fs.unlinkSync(mergedFilePath);
-      }
-    });
+res.setHeader("Content-Type", "application/pdf");
+res.setHeader("Content-Disposition", "attachment; filename=merged.pdf");
+res.send(mergedPdfBytes);
+
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "PDF merge failed" });
