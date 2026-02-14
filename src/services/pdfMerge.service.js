@@ -1,5 +1,4 @@
 const fs = require("fs");
-const path = require("path");
 const { PDFDocument } = require("pdf-lib");
 
 exports.mergePdfService = async (files) => {
@@ -8,18 +7,25 @@ exports.mergePdfService = async (files) => {
   for (const file of files) {
     const pdfBytes = fs.readFileSync(file.path);
     const pdf = await PDFDocument.load(pdfBytes);
-    const pages = await mergedPdf.copyPages(pdf, pdf.getPageIndices());
-    pages.forEach(page => mergedPdf.addPage(page));
+
+    const pages = await mergedPdf.copyPages(
+      pdf,
+      pdf.getPageIndices()
+    );
+
+    pages.forEach((page) => {
+      mergedPdf.addPage(page);
+    });
   }
 
- const mergedPdfBytes = await mergedPdf.save();
+  const mergedPdfBytes = await mergedPdf.save();
 
-// cleanup input PDFs
-files.forEach(file => {
-  if (fs.existsSync(file.path)) {
-    fs.unlinkSync(file.path);
-  }
-});
+  // Clean up uploaded temp files
+  files.forEach((file) => {
+    if (fs.existsSync(file.path)) {
+      fs.unlinkSync(file.path);
+    }
+  });
 
-return mergedPdfBytes;
-
+  return mergedPdfBytes;
+};
